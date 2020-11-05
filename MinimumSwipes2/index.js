@@ -1,17 +1,25 @@
 module.exports = originalQueue => {
-  const [, swapCounts] = originalQueue.reduce(
-    (carry, element, idx) => {
-      const [newQueue, swapCounts] = carry;
-      if (newQueue[idx] === idx + 1) return [[...newQueue], swapCounts];
+  const swapInPlace = (arr, idx) => {
+    let newIndex = arr[idx] - 1;
+    let tmp = arr[newIndex];
+    arr[newIndex] = arr[idx];
+    arr[idx] = tmp;
+  };
 
-      const smallerElIdx = newQueue.indexOf(idx + 1);
-      const smallerEl = newQueue[smallerElIdx];
-      const biggerEl = newQueue[idx];
-      newQueue[idx] = smallerEl;
-      newQueue[smallerElIdx] = biggerEl;
-      return [[...newQueue], swapCounts + 1];
-    },
-    [[...originalQueue], 0] // [newQueue, swapCounts]
-  );
-  return swapCounts;
+  const inPlace = (arr, index) => arr[index] == index + 1;
+
+  let swaps = 0;
+
+  for (let current = 0; current < originalQueue.length; ) {
+    if (!inPlace(originalQueue, current)) {
+      ++swaps;
+      console.log(originalQueue);
+      swapInPlace(originalQueue, current);
+      console.log(originalQueue);
+    } else {
+      ++current;
+    }
+  }
+
+  return swaps;
 };
