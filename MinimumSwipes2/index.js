@@ -1,25 +1,20 @@
-module.exports = originalQueue => {
-  const swapInPlace = (arr, idx) => {
-    let newIndex = arr[idx] - 1;
-    let tmp = arr[newIndex];
-    arr[newIndex] = arr[idx];
-    arr[idx] = tmp;
-  };
+module.exports = arr => {
+  const [, swapsNumber] = arr.reduce(
+    (carry, el, idx) => {
+      const [newQueue, swapNumber] = carry;
+      const expectedEl = idx + 1;
 
-  const inPlace = (arr, index) => arr[index] == index + 1;
+      if (newQueue[idx] === expectedEl) return carry;
 
-  let swaps = 0;
+      const rightIdx = newQueue.indexOf(expectedEl, idx + 1);
 
-  for (let current = 0; current < originalQueue.length; ) {
-    if (!inPlace(originalQueue, current)) {
-      ++swaps;
-      console.log(originalQueue);
-      swapInPlace(originalQueue, current);
-      console.log(originalQueue);
-    } else {
-      ++current;
-    }
-  }
+      newQueue[rightIdx] = newQueue[idx];
+      newQueue[idx] = expectedEl;
 
-  return swaps;
+      return [newQueue, swapNumber + 1];
+    },
+
+    [[...arr], 0] // [queue, swapsNumber]
+  );
+  return swapsNumber;
 };
