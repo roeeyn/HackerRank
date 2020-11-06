@@ -1,28 +1,27 @@
 module.exports = (queries, n) => {
-  const [, maxValue] = queries.reduce(
-    (carry, query, idx) => {
-      const [newArray, maxValue] = carry;
-      const [initIdx, endIdx, kValue] = query;
-
-      let tempMax = maxValue;
-      for (let i = initIdx; i <= endIdx; i++) {
-        newArray[i - 1] = newArray[i - 1] + kValue;
-        if (newArray[i - 1] > tempMax) tempMax = newArray[i - 1];
-      }
-
-      return [newArray, tempMax];
+  const modifiedArray = queries.reduce(
+    (arr, query, idx) => {
+      const [a, b, k] = query;
+      arr[a] += k;
+      arr[b + 1] -= k;
+      return arr;
     },
-    [[...Array.from({ length: n }, () => 0)], 0]
+    [...Array.from({ length: n + 2 }, () => 0)]
   );
-  return maxValue;
-};
 
-// let cosa = module.exports(
-//   [
-//     [1, 5, 3],
-//     [4, 8, 7],
-//     [6, 9, 1],
-//   ],
-//   10
-// );
-// console.log(cosa);
+  const [, result] = modifiedArray.reduce(
+    (carry, element, idx) => {
+      const [sumArr, maxIntersecSum] = carry;
+      if (idx === 0) return carry;
+      sumArr[idx] += sumArr[idx - 1];
+
+      return [
+        sumArr,
+        sumArr[idx] > maxIntersecSum ? sumArr[idx] : maxIntersecSum,
+      ];
+    },
+    [[...modifiedArray], 0]
+  );
+
+  return result;
+};
